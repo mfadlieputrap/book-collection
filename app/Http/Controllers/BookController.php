@@ -28,7 +28,7 @@ class BookController extends Controller
             ->withCount(['ratings as voter' => function ($query) {
                 $query->select(\DB::raw('count(*)'));
             }])
-            ->withAvg('ratings', 'rating'); 
+            ->withAvg('ratings', 'rating');
 
         // Get top 10 authors based on number of 5-star ratings
         $bookVotes = \DB::table('ratings')
@@ -50,19 +50,15 @@ class BookController extends Controller
 
 
         if ($search){
-            // $books->where(function($query) use ($search){
-            //     $query->where('title', 'like', '%'.$search.'%')
-            //         ->orWhereHas('author', function($q) use ($search){
-            //             $q->where('name', 'like', '%'.$search.'%');
-            //         });
-            // });
-            $books->whereRaw("MATCH(title) AGAINST(? IN BOOLEAN MODE)", [$search])
-                ->orWhereHas('author', function($q) use ($search){
+            $books->where(function($query) use ($search){
+                $query->whereRaw("MATCH(title) AGAINST(? IN BOOLEAN MODE)", [$search])
+                    ->orWhereHas('author', function($q) use ($search){
                         $q->where('name', 'like', '%'.$search.'%');
                     });
+            });
         }
 
-        
+
 
         $books = $books->paginate($limit)->appends($request->all());
 
