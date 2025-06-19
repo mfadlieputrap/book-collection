@@ -21,7 +21,6 @@ class RatingSeeder extends Seeder
         $popularBooks = Book::inRandomOrder()->limit(1000)->pluck('id')->toArray();
         $data = [];
 
-        // Generate 500K rating
         for ($i = 0; $i < 500000; $i++) {
             $bookId = $faker->randomElement(
                 rand(0,100) < 70 ? $popularBooks : $bookIds
@@ -35,12 +34,10 @@ class RatingSeeder extends Seeder
             ];
         }
 
-        // Insert ratings in chunks
         foreach (array_chunk($data, 1000) as $chunk) {
             DB::table('ratings')->insert($chunk);
         }
 
-        // Hitung top 10 book_id berdasarkan 5-star ratings
         $topBooks = DB::table('ratings')
             ->where('rating', '>=', 5)
             ->select('book_id', DB::raw('COUNT(*) as vote_count'))
@@ -49,11 +46,9 @@ class RatingSeeder extends Seeder
             ->limit(10)
             ->get();
 
-        // Ambil semua book dengan author-nya sekali query
         $bookIds = $topBooks->pluck('book_id');
         $books = Book::whereIn('id', $bookIds)->get()->keyBy('id');
 
-        // Siapkan data untuk top_rated_books
         $data = [];
         foreach ($topBooks as $item) {
             $book = $books[$item->book_id] ?? null;

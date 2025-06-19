@@ -54,7 +54,6 @@ class BookController extends Controller
                 });
             }
 
-        // Join authors and categories for name fields, optimize with select only needed columns
         $query->leftJoin('authors as a', 'books.author_id', '=', 'a.id')
             ->leftJoin('categories as c', 'books.category_id', '=', 'c.id')
             ->addSelect('a.name as author_name', 'c.name as category_name');
@@ -63,24 +62,6 @@ class BookController extends Controller
         $totalPages = ceil($totalBooks / $limit);
 
         $books = $query->limit($limit)->offset($offset)->get();
-
-        // // Top 10 authors
-        // $bookVotes = \DB::table('ratings')
-        //     ->where('rating', '>=', 5)
-        //     ->select('book_id', DB::raw('COUNT(*) as vote_count'))
-        //     ->groupBy('book_id');
-
-        // $topTenAuthors = \DB::table('books')
-        //     ->joinSub($bookVotes, 'bv', function($join){
-        //         $join->on('books.id', '=', 'bv.book_id');
-        //     })
-        //     ->join('authors', 'books.author_id', '=', 'authors.id')
-        //     ->select('authors.id', 'authors.name', DB::raw('SUM(bv.vote_count) as five_star_votes'))
-        //     ->groupBy('authors.id', 'authors.name')
-        //     ->orderByDesc('five_star_votes')
-        //     ->limit(10)
-        //     ->get();
-
 
         return view('index', compact('books', 'limit', 'search', 'currentPage', 'totalPages'));
     }
