@@ -91,6 +91,7 @@ class BookController extends Controller
             ->select('authors.id', 'authors.name', DB::raw('SUM(top_rated_books.five_star_count) as five_star_votes'))
             ->groupBy('authors.id', 'authors.name')
             ->orderByDesc('five_star_votes')
+            ->limit(10)
             ->get();
 
 
