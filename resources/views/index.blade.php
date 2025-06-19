@@ -51,38 +51,31 @@
         <tbody>
             @foreach ($books as $index => $book)
                 <tr>
-                    <td>{{ $loop->iteration + ($books->currentPage() - 1) * $books->perPage() }}</td>
+                    <td>{{ ($currentPage - 1) * $limit + $loop->iteration }}</td>
                     <td>{{ $book->title }}</td>
-                    <td>{{ $book->category->name ?? '-' }}</td>
-                    <td>{{ $book->author->name ?? '-' }}</td>
-                    <td>{{ number_format($book->ratings_avg_rating, 2) ?? '0.00' }}</td>
+                    <td>{{ $book->category_name ?? '-' }}</td>
+                    <td>{{ $book->author_name ?? '-' }}</td>
+                    <td>{{ number_format($book->rating_avg ?? 0, 2) }}</td>
                     <td>{{ $book->voter }}</td>
                 </tr>
             @endforeach
         </tbody>
     </table>
-    <h2>Top 10 Most Famous Author</h2>
 
-    <table>
-        <thead>
-            <tr>
-                <th>No.</th>
-                <th>Author Name</th>
-                <th>Voter</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($topTenAuthors as $index => $author)
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $author->name }}</td>
-                    <td>{{ $author->five_star_votes }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div style="margin-top: 20px;">
+        <div style="display: flex; justify-content: center; gap: 10px;">
+            @if ($currentPage > 1)
+                <a href="{{ request()->fullUrlWithQuery(['page' => $currentPage - 1]) }}">← Prev</a>
+            @endif
 
+            <span>Page {{ $currentPage }} of {{ $totalPages }}</span>
 
-    {!! $books->links('pagination::simple-default') !!}
+            @if ($currentPage < $totalPages)
+                <a href="{{ request()->fullUrlWithQuery(['page' => $currentPage + 1]) }}">Next →</a>
+            @endif
+        </div>
+    </div>
+    
+
 </body>
 </html>
