@@ -55,7 +55,9 @@ This is a Laravel 10 test project to manage a collection of books, authors, and 
    php artisan serve
    ```
 
-   Visit `http://localhost:8000`
+   Visit `http://localhost:8000/books` for book list page  
+   Visit `http://localhost:8000/rating` for input rating page  
+   Visit `http://localhost:8000/top-10-famous-author` for see top 10 most famous author
 
 ---
 
